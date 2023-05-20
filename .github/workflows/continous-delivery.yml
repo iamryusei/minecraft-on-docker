@@ -1,0 +1,40 @@
+name: Build and Deploy Docker Image
+on:
+  push:
+    branches:
+      - master
+    paths-ignore:
+      - 'readme.md'
+      - 'license.txt'
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-22.04
+    permissions:
+      contents: read
+      packages: write
+    strategy:
+      fail-fast: true
+    steps:
+      - 
+        id: checkout
+        uses: actions/checkout@v3.3.0
+      - 
+        id: build-docker-image
+        uses: docker/build-push-action@v2
+        with:
+          tags: iamryusei/minecraft-on-docker:latest
+          context: .
+          load: true
+          push: false
+      - 
+        id: login-to-github-container-registry
+        uses: docker/login-action@v2.1.0
+        with:
+          registry: ghcr.io
+          username: ${{github.actor}}
+          password: ${{secrets.GITHUB_TOKEN}}
+      - 
+        id: deploy-docker-image
+        run: |-
+          docker tag iamryusei/minecraft-on-docker:alpha ghcr.io/iamryusei/minecraft-on-docker:alpha
+          docker push ghcr.io/iamryusei/minecraft-on-docker:alpha

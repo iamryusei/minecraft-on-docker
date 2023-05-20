@@ -1,0 +1,21 @@
+version: "3.9"
+name: minecraft-on-docker
+services:
+  minecraft-server:
+    container_name: minecraft-server
+    image: ghcr.io/iamryusei/minecraft-on-docker:fabric-alpha
+    build:
+      context: ./images/minecraft-fabric
+      dockerfile: Dockerfile
+    env_file: minecraft.conf
+    volumes:
+      - ${MINECRAFT_VOLUME}/world:/opt/minecraft/world
+      - ${MINECRAFT_VOLUME}/config:/opt/minecraft/config
+      - ${MINECRAFT_VOLUME}/config/EasyAuth:/opt/minecraft/mods/EasyAuth
+      - ${MINECRAFT_VOLUME}/logs:/opt/minecraft/logs
+    ports:
+      - "25565:25565"
+  dynu:
+    container_name: dynu
+    image: ghcr.io/iamryusei/dynu-on-docker:latest
+    env_file: dynu.conf
