@@ -22,7 +22,7 @@ jobs:
         id: build-docker-image
         uses: docker/build-push-action@v2
         with:
-          tags: iamryusei/minecraft-on-docker:latest
+          tags: iamryusei/minecraft-on-docker:alpha
           context: .
           load: true
           push: false
